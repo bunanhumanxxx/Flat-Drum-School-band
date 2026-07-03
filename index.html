@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flat Drum School - バンドメンバー募集</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1 class="app-main-title">Flat Drum School</h1>
+            <h2 class="app-sub-title">バンドメンバー募集ボード</h2>
+            <button id="add-btn" class="primary-btn">＋ 新規募集</button>
+        </header>
+
+        <main id="list-container">
+            <!-- Items injected by JS -->
+        </main>
+    </div>
+
+    <!-- Modal Form -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">新規募集</h2>
+            <form id="recruitment-form">
+                <input type="hidden" id="item-id">
+
+                <div class="form-group" id="status-group">
+                    <label>募集ステータス</label>
+                    <select id="status" required>
+                        <option value="募集中">募集中</option>
+                        <option value="締め切り">締め切り</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>アーティスト名</label>
+                    <input type="text" id="artist" required placeholder="例: BUMP OF CHICKEN">
+                </div>
+
+                <div class="form-group">
+                    <label>曲名</label>
+                    <input type="text" id="song" required placeholder="例: 天体観測">
+                </div>
+
+                <div class="form-group">
+                    <label>希望パート</label>
+                    <div class="checkbox-group">
+                        <div class="part-row">
+                            <label><input type="checkbox" name="part" value="Vo."> Vo.</label>
+                            <div class="part-count-wrapper">
+                                <button type="button" class="spin-btn decrease-btn" disabled>－</button>
+                                <input type="number" name="part_count_Vo." min="1" max="99" value="1" disabled
+                                    class="part-num-input" readonly>
+                                <button type="button" class="spin-btn increase-btn" disabled>＋</button>
+                                <span>人</span>
+                            </div>
+                        </div>
+
+                        <div class="part-row">
+                            <label><input type="checkbox" name="part" value="Gt."> Gt.</label>
+                            <div class="part-count-wrapper">
+                                <button type="button" class="spin-btn decrease-btn" disabled>－</button>
+                                <input type="number" name="part_count_Gt." min="1" max="99" value="1" disabled
+                                    class="part-num-input" readonly>
+                                <button type="button" class="spin-btn increase-btn" disabled>＋</button>
+                                <span>人</span>
+                            </div>
+                        </div>
+                        <div class="part-row">
+                            <label><input type="checkbox" name="part" value="Ba."> Ba.</label>
+                            <div class="part-count-wrapper">
+                                <button type="button" class="spin-btn decrease-btn" disabled>－</button>
+                                <input type="number" name="part_count_Ba." min="1" max="99" value="1" disabled
+                                    class="part-num-input" readonly>
+                                <button type="button" class="spin-btn increase-btn" disabled>＋</button>
+                                <span>人</span>
+                            </div>
+                        </div>
+                        <div class="part-row">
+                            <label><input type="checkbox" name="part" value="Dr."> Dr.</label>
+                            <div class="part-count-wrapper">
+                                <button type="button" class="spin-btn decrease-btn" disabled>－</button>
+                                <input type="number" name="part_count_Dr." min="1" max="99" value="1" disabled
+                                    class="part-num-input" readonly>
+                                <button type="button" class="spin-btn increase-btn" disabled>＋</button>
+                                <span>人</span>
+                            </div>
+                        </div>
+                        <!-- 任意の楽器（その他）を動的に追加するセクション -->
+                        <div id="custom-parts-container"></div>
+                        <div style="margin-top: 12px;">
+                            <button type="button" id="add-other-part-btn" class="secondary-btn"
+                                style="padding: 6px 12px; font-size: 0.85rem; width: 100%; border: 1px dashed rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); color: var(--text-main);">＋
+                                その他の楽器を追加</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancel-btn" class="secondary-btn">キャンセル</button>
+                    <button type="submit" class="primary-btn">保存する</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="modal hidden">
+        <div class="modal-content">
+            <div id="detail-content" style="margin-bottom: 24px;">
+                <!-- Dynamically injected -->
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="detail-close-btn" class="secondary-btn">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Modal -->
+    <div id="candidate-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="candidate-modal-title">パートに立候補</h2>
+            <form id="candidate-form">
+                <input type="hidden" id="candidate-item-id">
+                <input type="hidden" id="candidate-part">
+                <input type="hidden" id="candidate-index">
+
+                <div class="form-group">
+                    <label>お名前</label>
+                    <input type="text" id="candidate-name" required placeholder="例: 山田太郎">
+                </div>
+
+                <div class="form-group">
+                    <label>備考・メッセージ</label>
+                    <input type="text" id="candidate-note" placeholder="例: よろしくお願いします！">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="candidate-cancel-btn" class="secondary-btn">キャンセル</button>
+                    <button type="submit" class="primary-btn">立候補する</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="modal hidden" style="z-index: 9999; background: rgba(15, 23, 42, 0.9);">
+        <div
+            style="color: white; font-size: 1.1rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+            <div class="loader-spinner"></div>
+            <span>サーバーと通信中...</span>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
