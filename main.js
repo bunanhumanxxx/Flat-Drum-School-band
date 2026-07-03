@@ -182,16 +182,30 @@ function renderItems() {
         return;
     }
 
-    items.forEach((item, index) => {
+    const renderList = items.map((item, index) => ({ item, index }));
+
+    renderList.sort((a, b) => {
+        const isRecruitingA = typeof a.item.status === 'string' && a.item.status.includes('募集中');
+        const isRecruitingB = typeof b.item.status === 'string' && b.item.status.includes('募集中');
+
+        if (isRecruitingA && !isRecruitingB) return -1;
+        if (!isRecruitingA && isRecruitingB) return 1;
+        return a.index - b.index;
+    });
+
+    renderList.forEach((wrapper) => {
+        const item = wrapper.item;
+        const index = wrapper.index;
+
         if (!item.candidates) item.candidates = {};
         if (!item.partCounts) item.partCounts = {};
 
         const trueNumber = index + 1;
-        const card = document.createElement('div');
-        card.className = 'item-card';
-
         const isRecruiting = typeof item.status === 'string' && item.status.includes('募集中');
         const statusClass = isRecruiting ? 'active' : 'closed';
+
+        const card = document.createElement('div');
+        card.className = 'item-card' + (isRecruiting ? '' : ' closed-card');
 
         const partsContainer = document.createElement('div');
         partsContainer.className = 'parts-list';

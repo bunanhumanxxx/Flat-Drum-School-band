@@ -132,6 +132,18 @@ button {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+.item-card.closed-card {
+    opacity: 0.55;
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.03);
+    filter: grayscale(85%);
+}
+
+.item-card.closed-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 .card-header {
     display: flex;
     justify-content: space-between;
