@@ -306,34 +306,34 @@ function openDetailModal(id) {
     const musicNoteSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="2.5"></circle><circle cx="17.5" cy="15.5" r="2.5"></circle><path d="M8 17.5V5l12-2v12.5"></path><path d="M8 9l12-2"></path></svg>`;
 
     let html = `
-        <div style="margin-bottom: 20px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
+        <div style="margin-bottom: 24px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
                 <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem;">ステータス</span>
-                <span class="status-badge ${statusClass}" style="transform:none;">${escapeHTML(item.status)}</span>
+                <span class="status-badge ${statusClass}" style="transform:none; font-size: 0.9rem;">${escapeHTML(item.status)}</span>
             </div>
-            <div style="margin-bottom:20px; display:inline-block; background:rgba(255,255,255,0.06); padding:8px 16px; border-radius:24px; border:1px solid rgba(255,255,255,0.1);">
-                <span style="font-weight:bold; color:var(--text-muted); font-size:0.85rem; display:block; margin-bottom:4px;">投稿者</span>
-                <span style="font-size:1.15rem; display:flex; align-items:center; gap:6px; color:var(--text-main);">
+            <div style="margin-bottom:16px;">
+                <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:4px;">投稿者</span>
+                <span style="font-size:1.15rem; display:flex; align-items:center; gap:6px; color:#f8fafc;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span style="font-weight:600;">${escapeHTML(item.author || '未設定')}</span>
                 </span>
             </div>
             <div style="margin-bottom:16px;">
                 <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:4px;">アーティスト名</span>
-                <span style="font-size:1.4rem; font-weight:700;">${escapeHTML(item.artist)}</span>
+                <span style="font-size:1.4rem; font-weight:700; color:#ffffff;">${escapeHTML(item.artist)}</span>
             </div>
             <div style="margin-bottom:24px;">
                 <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:4px;">曲名</span>
-                <span style="font-size:1.3rem; display:flex; align-items:center; gap:6px;">
+                <span style="font-size:1.3rem; display:flex; align-items:center; gap:6px; color:#f8fafc; font-weight:500;">
                     ${musicNoteSVG}
                     ${escapeHTML(item.song)}
                 </span>
             </div>
             ${item.comment ? `
-            <div style="margin-bottom:24px;">
-                <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:8px;">一言コメント</span>
-                <div style="background: rgba(0,0,0,0.25); padding: 16px; border-radius: 12px; border-left: 4px solid var(--primary); font-size:1.05rem; line-height: 1.6; color: #f1f5f9; display:flex; gap:12px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <div style="margin-bottom:28px;">
+                <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:6px;">一言コメント</span>
+                <div style="font-size:1.05rem; line-height: 1.6; color: #cbd5e1; display:flex; gap:10px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                     <span style="flex:1;">${escapeHTML(item.comment).replace(/\n/g, '<br>')}</span>
                 </div>
             </div>` : ''}
