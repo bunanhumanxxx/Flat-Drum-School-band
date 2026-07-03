@@ -240,16 +240,27 @@ function renderItems() {
         const musicNoteSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="2.5"></circle><circle cx="17.5" cy="15.5" r="2.5"></circle><path d="M8 17.5V5l12-2v12.5"></path><path d="M8 9l12-2"></path></svg>`;
 
         card.innerHTML = `
-            <div class="card-header">
-                <span class="item-number">NO. ${trueNumber}</span>
+            <div class="card-header" style="margin-bottom:8px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span class="item-number" style="font-size:1.05rem;">NO. ${trueNumber}</span>
+                    <span style="font-size:0.9rem; font-weight:500; color:#cbd5e1; display:flex; align-items:center; gap:4px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        ${escapeHTML(item.author || '未設定')}
+                    </span>
+                </div>
                 <span class="status-badge ${statusClass}">${escapeHTML(item.status)}</span>
             </div>
-            <div class="song-info">
-                <h3>${escapeHTML(item.artist)}</h3>
-                <p style="display:flex; align-items:center; gap:6px;">
+            <div class="song-info" style="margin-bottom:12px;">
+                <h3 style="margin-bottom:6px; font-size:1.35rem; color:#ffffff; font-weight:700;">${escapeHTML(item.artist)}</h3>
+                <p style="display:flex; align-items:center; gap:8px; font-size:1.05rem; font-weight:500; color:#f8fafc; margin-bottom:0;">
                     ${musicNoteSVG}
                     ${escapeHTML(item.song)}
                 </p>
+                ${item.comment ? `
+                <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.15); font-size:0.95rem; font-weight:400; color:#cbd5e1; display:flex; gap:8px; line-height:1.5;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span style="flex:1;">${escapeHTML(item.comment)}</span>
+                </div>` : ''}
             </div>
         `;
 
@@ -300,6 +311,13 @@ function openDetailModal(id) {
                 <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem;">ステータス</span>
                 <span class="status-badge ${statusClass}" style="transform:none;">${escapeHTML(item.status)}</span>
             </div>
+            <div style="margin-bottom:20px; display:inline-block; background:rgba(255,255,255,0.06); padding:8px 16px; border-radius:24px; border:1px solid rgba(255,255,255,0.1);">
+                <span style="font-weight:bold; color:var(--text-muted); font-size:0.85rem; display:block; margin-bottom:4px;">投稿者</span>
+                <span style="font-size:1.15rem; display:flex; align-items:center; gap:6px; color:var(--text-main);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span style="font-weight:600;">${escapeHTML(item.author || '未設定')}</span>
+                </span>
+            </div>
             <div style="margin-bottom:16px;">
                 <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:4px;">アーティスト名</span>
                 <span style="font-size:1.4rem; font-weight:700;">${escapeHTML(item.artist)}</span>
@@ -311,6 +329,14 @@ function openDetailModal(id) {
                     ${escapeHTML(item.song)}
                 </span>
             </div>
+            ${item.comment ? `
+            <div style="margin-bottom:24px;">
+                <span style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; display:block; margin-bottom:8px;">一言コメント</span>
+                <div style="background: rgba(0,0,0,0.25); padding: 16px; border-radius: 12px; border-left: 4px solid var(--primary); font-size:1.05rem; line-height: 1.6; color: #f1f5f9; display:flex; gap:12px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span style="flex:1;">${escapeHTML(item.comment).replace(/\n/g, '<br>')}</span>
+                </div>
+            </div>` : ''}
         </div>
         <div style="font-weight:bold; color:var(--text-muted); font-size:0.95rem; margin-bottom: 12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">募集パート</div>
         <div id="detail-parts-container"></div>
@@ -531,8 +557,10 @@ function openModal(id = null) {
             const isRecruiting = item.status.includes('募集中');
             document.getElementById('status').value = isRecruiting ? '募集中' : '締め切り';
 
+            document.getElementById('author').value = item.author || '';
             document.getElementById('artist').value = item.artist;
             document.getElementById('song').value = item.song;
+            document.getElementById('board-comment').value = item.comment || '';
 
             const standardParts = ['Vo.', 'Gt.', 'Ba.', 'Dr.'];
 
@@ -561,6 +589,8 @@ function openModal(id = null) {
         const statusGroup = document.getElementById('status-group');
         if (statusGroup) statusGroup.style.display = 'none';
         document.getElementById('status').value = '募集中';
+        document.getElementById('author').value = '';
+        document.getElementById('board-comment').value = '';
     }
 
     modal.classList.remove('hidden');
@@ -581,8 +611,10 @@ form.addEventListener('submit', (e) => {
 
     const idInput = document.getElementById('item-id').value;
     const status = document.getElementById('status').value;
+    const author = document.getElementById('author').value.trim();
     const artist = document.getElementById('artist').value;
     const song = document.getElementById('song').value;
+    const comment = document.getElementById('board-comment').value.trim();
 
     const parts = [];
     const partCounts = {};
@@ -614,8 +646,10 @@ form.addEventListener('submit', (e) => {
 
     const newData = {
         status,
+        author,
         artist,
         song,
+        comment,
         parts,
         partCounts
     };
