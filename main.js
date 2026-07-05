@@ -161,16 +161,14 @@ function initBranch() {
     document.getElementById('branch-tokyo-btn').addEventListener('click', () => { window.location.href = '?branch=tokyo'; });
     document.getElementById('branch-osaka-btn').addEventListener('click', () => { window.location.href = '?branch=osaka'; });
 
-    // Switch branch from header
+    // トップへ戻る（ストレージとパラメータをクリア）
     const switchBtn = document.getElementById('switch-branch-btn');
     const closeBranchBtn = document.getElementById('branch-modal-close-btn');
 
     if (switchBtn) {
         switchBtn.addEventListener('click', () => {
-            if (currentBranch) {
-                closeBranchBtn.classList.remove('hidden'); // 校舎選択済みなら閉じるボタンを表示
-            }
-            branchModal.classList.add('active');
+            localStorage.removeItem('fds_selected_branch');
+            window.location.href = window.location.pathname; // パラメータ無しのURLへ遷移
         });
     }
 
