@@ -2,6 +2,9 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzAo8Ogvx7GCIK4Po7zPpjgz3km8jzlLo7tgFe8Ztt4-n9K1bITaLL_XZe2K3rvsjWWag/exec';
 const SECURITY_TOKEN = "fds_secret_2026";
 
+// App State
+let currentBranch = '';
+
 // DOM Elements
 const listContainer = document.getElementById('list-container');
 const addBtn = document.getElementById('add-btn');
@@ -90,14 +93,15 @@ function addCustomPartRow(nameStr = '', countNum = 1) {
 
 // 初期データの読み込み（サーバーからGET）
 async function loadItems() {
+    if (!currentBranch) return; // 校舎未選択時は保留
     showLoading();
     try {
-        const res = await fetch(GAS_URL);
+        const res = await fetch(`${GAS_URL}?branch=${currentBranch}`);
         const data = await res.json();
         items = Array.isArray(data) ? data : [];
     } catch (err) {
         console.error("Fetch Error:", err);
-        items = []; // エラー時は空枠にするか、localStorageのキャッシュを使うなどの運用も可能
+        items = [];
     } finally {
         hideLoading();
         renderItems();
@@ -118,6 +122,7 @@ async function saveItems() {
                 'Content-Type': 'text/plain;charset=utf-8' // CORS対策
             },
             body: JSON.stringify({
+                branch: currentBranch,
                 action: 'saveAll',
                 token: SECURITY_TOKEN,
                 data: items
@@ -131,8 +136,62 @@ async function saveItems() {
     }
 }
 
+function initBranch() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const branchParam = urlParams.get('branch');
+    const branchModal = document.getElementById('branch-modal-overlay');
+    const appTitleDisplay = document.getElementById('app-title-display');
+
+    if (branchParam === 'tokyo' || branchParam === 'osaka') {
+        currentBranch = branchParam;
+        localStorage.setItem('fds_selected_branch', currentBranch);
+        const name = currentBranch === 'tokyo' ? 'Flat Drum School 東京校' : 'Flat Drum School 大阪校';
+        appTitleDisplay.textContent = name;
+        document.title = name + ' - バンドメンバー募集';
+        loadItems(); // 校舎が確定してからロードする
+    } else {
+        const savedBranch = localStorage.getItem('fds_selected_branch');
+        if (savedBranch === 'tokyo' || savedBranch === 'osaka') {
+            window.location.replace('?branch=' + savedBranch);
+        } else {
+            branchModal.classList.add('active'); // CSSの仕様に合わせactiveを付与
+        }
+    }
+
+    document.getElementById('branch-tokyo-btn').addEventListener('click', () => { window.location.href = '?branch=tokyo'; });
+    document.getElementById('branch-osaka-btn').addEventListener('click', () => { window.location.href = '?branch=osaka'; });
+
+    // Switch branch from header
+    const switchBtn = document.getElementById('switch-branch-btn');
+    const closeBranchBtn = document.getElementById('branch-modal-close-btn');
+
+    if (switchBtn) {
+        switchBtn.addEventListener('click', () => {
+            if (currentBranch) {
+                closeBranchBtn.classList.remove('hidden'); // 校舎選択済みなら閉じるボタンを表示
+            }
+            branchModal.classList.add('active');
+        });
+    }
+
+    if (closeBranchBtn) {
+        closeBranchBtn.addEventListener('click', () => {
+            branchModal.classList.remove('active');
+        });
+    }
+
+    // Modal background click to close
+    branchModal.addEventListener('click', (e) => {
+        if (e.target === branchModal && !closeBranchBtn.classList.contains('hidden')) {
+            branchModal.classList.remove('active');
+        }
+    });
+}
+
 // 初期化
 function init() {
+    initBranch();
+
     // 各チェックボックス変更時に連動して無効化/有効化するロジック
     document.querySelectorAll('input[type="checkbox"][name="part"]').forEach(cb => {
         cb.addEventListener('change', (e) => {
@@ -692,6 +751,9 @@ function deleteItem(id) {
 addBtn.addEventListener('click', () => openModal());
 cancelBtn.addEventListener('click', closeModal);
 
+// Event Listeners Initialize
+// loadItems(); は initBranch() 内部で呼び出されるようになりました
+init();
 modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
